@@ -1,0 +1,34 @@
+name: flutter_zoom
+description: Flutter wrapper for the Zoom client SDK on iOS and Android. MacOS and Web support may come later.
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ">=2.16.2 <3.0.0"
+  flutter: ">=2.5.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  universal_platform:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: work.future.flutter_zoom
+        pluginClass: FlutterZoomPlugin
+      ios:
+        pluginClass: FlutterZoomPlugin
+      macos:
+        pluginClass: FlutterZoomPlugin
+      web:
+        pluginClass: FlutterZoomWeb
+        fileName: flutter_zoom_web.dart

@@ -1,0 +1,66 @@
+#include: package:flutter_lints/flutter.yaml
+analyzer:
+  language:
+    strict-inference: true
+  strong-mode:
+    implicit-casts: false
+    #implicit-dynamic: false
+  # we don't really make a distinction between warnings and errors as both will fail our `dart analyze` check
+  # so we just make everything we want to prevent an error for now
+  errors:
+    missing_required_param: error
+    override_on_non_overriding_member: error
+    must_be_immutable: error
+    body_might_complete_normally_nullable: error
+    # for deprecated items, use suppressions to allow existing use while preventing new code using deprecated functionality
+    deprecated_member_use: info
+    deprecated_member_use_from_same_package: info
+    always_declare_return_types: error
+    avoid_print: error # typically use loggers. suppress usages which are very intentional.
+    prefer_single_quotes: info
+    always_use_package_imports: error
+    unnecessary_new: error
+    unnecessary_this: info
+    avoid_unnecessary_containers: error
+    annotate_overrides: error
+    await_only_futures: error
+    unnecessary_brace_in_string_interps: info
+    unused_catch_clause: error
+    unnecessary_type_check: info
+    avoid_shadowing_type_parameters: info
+    prefer_is_empty: info
+    prefer_is_not_empty: info
+    use_key_in_widget_constructors: info
+    avoid_init_to_null: error
+    sized_box_for_whitespace: error
+    prefer_equal_for_default_values: error
+    empty_constructor_bodies: error
+    unnecessary_const: info
+    prefer_final_fields: error
+    unnecessary_string_interpolations: info
+
+linter:
+  rules:
+    constant_identifier_names: false
+
+    always_declare_return_types: true
+    avoid_print: true
+    prefer_single_quotes: true
+    always_use_package_imports: true
+    unnecessary_new: true
+    unnecessary_this: true
+    avoid_unnecessary_containers: true
+    annotate_overrides : true
+    await_only_futures: true
+    unnecessary_brace_in_string_interps: true
+    avoid_shadowing_type_parameters: true
+    prefer_is_empty: true
+    prefer_not_empty: true
+    use_key_in_widget_constructors: true
+    avoid_init_to_null: true
+    sized_box_for_whitespace: true
+    prefer_equal_for_default_values: true
+    empty_constructor_bodies: true
+    unnecessary_const: true
+    prefer_final_fields: true
+    unnecessary_string_interpolations: true
