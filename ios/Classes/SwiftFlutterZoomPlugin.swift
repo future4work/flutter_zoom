@@ -196,10 +196,6 @@ class ZoomClientWrapperAuthDelegate : NSObject, MobileRTCAuthDelegate {
     _methodChannel.invokeMethod("onAuthReturn", arguments: [NSNumber(value: returnValue.rawValue)])
   }
 
-  func onMobileRTCLoginResult(_ resultValue : MobileRTCLoginFailReason) {
-    _methodChannel.invokeMethod("onLoginResult", arguments: [NSNumber(value: resultValue.rawValue)])
-  }
-
   func onMobileRTCLogoutReturn(_ returnValue : NSInteger) {
     _methodChannel.invokeMethod("onLogoutReturn", arguments: [NSNumber(value: returnValue)])
   }
@@ -406,27 +402,16 @@ class ZoomClientWrapperWaitingRoomDelegate : NSObject, MobileRTCWaitingRoomServi
 }
 
 public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
-//   public static func register(with registrar: FlutterPluginRegistrar) {
-//     let channel = FlutterMethodChannel(name: "flutter_zoom", binaryMessenger: registrar.messenger())
-//     let instance = SwiftFlutterZoomPlugin()
-//     registrar.addMethodCallDelegate(instance, channel: channel)
-//   }
-//
-//   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-//     result("iOS " + UIDevice.current.systemVersion)
-//   }
-
-
   var _authDelegate: ZoomClientWrapperAuthDelegate
   var _meetingDelegate: ZoomClientWrapperMeetingDelegate
   var _customMeetingUIDelegate: ZoomClientWrapperCustomMeetingUIDelegate
   var _waitingRoomDelegate: ZoomClientWrapperWaitingRoomDelegate
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "flutter-zoom", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "flutter_zoom", binaryMessenger: registrar.messenger())
     let meetingViewFactory = ZoomMeetingViewFactory(messenger: registrar.messenger())
     let screenShareViewFactory = ZoomScreenShareViewFactory(messenger: registrar.messenger())
-    let instance = SwiftZoomClientWrapperPlugin(channel: channel)
+    let instance = SwiftFlutterZoomPlugin(channel: channel)
     registrar.addMethodCallDelegate(instance, channel: channel)
     registrar.register(meetingViewFactory, withId: "zoom-meeting-view")
     registrar.register(screenShareViewFactory, withId: "zoom-screen-share-view")
@@ -442,6 +427,8 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
+    case "getPlatformVersion":
+      result("0.0.1")
     case "initSDK":
       result(handleInitClientSDK(call))
     case "initAuthSDKParams":
@@ -793,7 +780,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
     return NSNumber(value: 0)
   }
 
-  func handleGetAllUserIds(_ call: FlutterMethodCall) -> [NSNumber] {
+  func handleGetAllUserIds(_ call: FlutterMethodCall) -> [Any] {
     if let ms = MobileRTC.shared().getMeetingService() {
       if let userIds = ms.getInMeetingUserList() {
         return userIds
@@ -899,11 +886,12 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleRotateMyVideo(_ call: FlutterMethodCall) -> NSNumber {
-    if let args = call.arguments as? Array<NSNumber> {
-      if let ms = MobileRTC.shared().getMeetingService() {
-        return NSNumber(value: ms.rotateMyVideo(UIDeviceOrientation(rawValue: args[0].intValue)!))
-      }
-    }
+//   TODO AW
+//     if let args = call.arguments as? Array<NSNumber> {
+//       if let ms = MobileRTC.shared().getMeetingService() {
+//         return NSNumber(value: ms.rotateMyVideo(UIDeviceOrientation(rawValue: args[0].intValue)!))
+//       }
+//     }
     return NSNumber(value: false)
   }
 
