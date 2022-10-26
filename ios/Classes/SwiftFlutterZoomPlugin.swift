@@ -408,7 +408,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   var _waitingRoomDelegate: ZoomClientWrapperWaitingRoomDelegate
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "flutter_zoom", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "flutter-zoom", binaryMessenger: registrar.messenger())
     let meetingViewFactory = ZoomMeetingViewFactory(messenger: registrar.messenger())
     let screenShareViewFactory = ZoomScreenShareViewFactory(messenger: registrar.messenger())
     let instance = SwiftFlutterZoomPlugin(channel: channel)
