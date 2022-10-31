@@ -517,7 +517,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
       initContext.enableLog = true
       initContext.locale = .default
 
-      let bundle = Bundle(identifier: "org.cocoapods.zoom-client-wrapper-platform-ios")
+      let bundle = Bundle(identifier: "org.cocoapods.flutter-zoom")
       initContext.bundleResPath = bundle!.bundlePath
 
       return NSNumber(value: MobileRTC.shared().initialize(initContext))
