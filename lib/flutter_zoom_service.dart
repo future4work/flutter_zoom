@@ -106,6 +106,8 @@ abstract class ZoomService {
 
   Future<bool> logout();
 
+  Future<String?> fullName();
+
   Future<int> getUserType();
 
   Future<bool> isLoggedIn();

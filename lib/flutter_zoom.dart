@@ -24,6 +24,15 @@ class FlutterZoom {
 
     static const MethodChannel _channel = MethodChannel('flutter_zoom');
 
+    static void enableLogging() async {
+      return _channel.invokeMethod('enableLogging');
+    }
+
+    static void disableLogging() async {
+      return _channel.invokeMethod('disableLogging');
+    }
+
+
     static Future<String?> get platformVersion async {
       final String? version = await _channel.invokeMethod('getPlatformVersion');
       return version;
@@ -32,14 +41,15 @@ class FlutterZoom {
 
 class ZoomMeetingView extends StatelessWidget {
   final int userId;
-  final bool videoMuted;
 
-  const ZoomMeetingView({ required this.userId, required this.videoMuted, Key? key }) : super(key: key);
+  const ZoomMeetingView({ required this.userId, Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
       if (UniversalPlatform.isIOS) {
-        return ZoomIOSMeetingView(userId: userId, videoMuted: videoMuted);
+        return ZoomIOSMeetingView(userId: userId);
+      } else if (UniversalPlatform.isAndroid) {
+        return const ZoomNotImplementedMeetingView();
       } else {
         return const ZoomNotImplementedMeetingView();
       }
@@ -48,14 +58,13 @@ class ZoomMeetingView extends StatelessWidget {
 
 class ZoomScreenShareView extends StatelessWidget {
   final int userId;
-  final bool videoMuted;
 
-  const ZoomScreenShareView({ required this.userId, required this.videoMuted, Key? key }) : super(key: key);
+  const ZoomScreenShareView({ required this.userId, Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (UniversalPlatform.isIOS) {
-      return ZoomIOSScreenShareView(userId: userId, videoMuted: videoMuted);
+      return ZoomIOSScreenShareView(userId: userId);
     } else {
       return const ZoomNotImplementedMeetingView();
     }

@@ -3,12 +3,22 @@ import UIKit
 import MobileRTC
 import MobileCoreServices
 
+var _debugLogging: Bool = false
+
+func _log(message: NSString) {
+  if (_debugLogging) {
+    var m: String = message as String
+    NSLog("flutter_zoom: " + m + "\n")
+  }
+}
+
 class ZoomCustomMeetingViewController : UIViewController {
 
   lazy var videoView = MobileRTCVideoView(frame: view.bounds)
   var _userId: UInt = 0
 
   override func viewDidAppear(_ animated: Bool) {
+    _log(message: "enter ZoomCustomMeetingViewController.viewDidAppear")
     super.viewDidAppear(animated)
 
     videoView.setVideoAspect(MobileRTCVideoAspect_PanAndScan)
@@ -18,15 +28,18 @@ class ZoomCustomMeetingViewController : UIViewController {
   }
 
   func setFrame(frame: CGRect) {
-    NSLog("Set frame %f %f %f %f\n", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height)
+    _log(message: "enter ZoomCustomMeetingViewController.setFrame")
+    _log(message: NSString(format: "Set frame %f %f %f %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height))
   }
 
   func setPreview(_ preview : Bool) {
-    NSLog("Set preview %i\n", preview)
+    _log(message: "enter ZoomCustomMeetingViewController.setPreview")
+    _log(message: NSString(format: "Set preview %i", preview))
   }
 
   func showUser(userId: UInt) {
-    NSLog("Show user %u\n", userId)
+    _log(message: "enter ZoomCustomMeetingViewController.showUser")
+    _log(message: NSString(format: "Show user %u", userId))
     _userId = userId
   }
 
@@ -54,10 +67,12 @@ class ZoomMeetingView: NSObject, FlutterPlatformView {
   }
 
   func view() -> UIView {
+    _log(message: "enter ZoomMeetingView.view")
     return _viewController.view
   }
 
   func setupViewController(userId: UInt) {
+    _log(message: "enter ZoomMeetingView.setupViewController")
     _viewController.showUser(userId: userId)
   }
 
@@ -73,11 +88,13 @@ class ZoomMeetingViewFactory: NSObject, FlutterPlatformViewFactory {
   }
 
   func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
+    _log(message: "enter ZoomMeetingViewFactory.create")
     NSLog("Create frame %f %f %f %f\n", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height)
     return ZoomMeetingView(frame: frame, viewIdentifier: viewId, arguments: args, binaryMessenger: _messenger)
   }
 
   @objc public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
+    _log(message: "enter ZoomMeetingViewFactory.createArgsCodec")
     return FlutterStandardMessageCodec.sharedInstance()
   }
 }
@@ -88,6 +105,7 @@ class ZoomScreenShareViewController : UIViewController {
   var _userId: UInt = 0
 
   override func viewDidAppear(_ animated: Bool) {
+    _log(message: "enter ZoomScreenShareViewController.viewDidAppear")
     super.viewDidAppear(animated)
 
     videoView.setVideoAspect(MobileRTCVideoAspect_PanAndScan)
@@ -97,14 +115,17 @@ class ZoomScreenShareViewController : UIViewController {
   }
 
   func setFrame(frame: CGRect) {
+    _log(message: "enter ZoomScreenShareViewController.setFrame")
     NSLog("Set frame %f %f %f %f\n", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height)
   }
 
   func setPreview(_ preview : Bool) {
+    _log(message: "enter ZoomScreenShareViewController.setPreview")
     NSLog("Set preview %i\n", preview)
   }
 
   func showUser(userId: UInt) {
+    _log(message: "enter ZoomScreenShareViewController.showUser")
     NSLog("Show user %u\n", userId)
     _userId = userId
   }
@@ -133,10 +154,12 @@ class ZoomScreenShareView: NSObject, FlutterPlatformView {
   }
 
   func view() -> UIView {
+    _log(message: "enter ZoomScreenShareView.view")
     return _viewController.view
   }
 
   func setupViewController(userId: UInt) {
+    _log(message: "enter ZoomScreenShareView.setupViewController")
     _viewController.showUser(userId: userId)
   }
 
@@ -152,10 +175,12 @@ class ZoomScreenShareViewFactory: NSObject, FlutterPlatformViewFactory {
   }
 
   func create(withFrame frame: CGRect, viewIdentifier viewId: Int64, arguments args: Any?) -> FlutterPlatformView {
+    _log(message: "enter ZoomScreenShareViewFactory.create")
     return ZoomScreenShareView(frame: frame, viewIdentifier: viewId, arguments: args, binaryMessenger: _messenger)
   }
 
   @objc public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
+    _log(message: "enter ZoomScreenShareViewFactory.createArgsCodec")
     return FlutterStandardMessageCodec.sharedInstance()
   }
 }
@@ -170,10 +195,12 @@ class ZoomClientWrapperCustomMeetingUIDelegate : NSObject, MobileRTCCustomizedUI
   }
 
   func onInitMeetingView() {
+    _log(message: "enter ZoomClientWrapperCustomMeetingUIDelegate.onInitMeetingView")
     _methodChannel.invokeMethod("onInitMeetingView", arguments: nil)
   }
 
   func onDestroyMeetingView() {
+    _log(message: "enter ZoomClientWrapperCustomMeetingUIDelegate.onDestroyMeetingView")
     _methodChannel.invokeMethod("onDestroyMeetingView", arguments: nil)
   }
 
@@ -189,14 +216,17 @@ class ZoomClientWrapperAuthDelegate : NSObject, MobileRTCAuthDelegate {
   }
 
   func onMobileRTCAuthExpired() {
+    _log(message: "enter ZoomClientWrapperAuthDelegate.onMobileRTCAuthExpired")
     _methodChannel.invokeMethod("onAuthExpired", arguments: nil)
   }
 
   func onMobileRTCAuthReturn(_ returnValue : MobileRTCAuthError) {
+    _log(message: "enter ZoomClientWrapperAuthDelegate.onMobileRTCAuthReturn")
     _methodChannel.invokeMethod("onAuthReturn", arguments: [NSNumber(value: returnValue.rawValue)])
   }
 
   func onMobileRTCLogoutReturn(_ returnValue : NSInteger) {
+    _log(message: "enter ZoomClientWrapperAuthDelegate.onMobileRTCLogoutReturn")
     _methodChannel.invokeMethod("onLogoutReturn", arguments: [NSNumber(value: returnValue)])
   }
 
@@ -219,6 +249,7 @@ class ZoomClientWrapperMeetingDelegate
 // MEETING CALLBACKS
 
   func onJBHWaiting(with cmd: JBHCmd) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onJBHWaiting")
     switch (cmd) {
     case .show:
       NSLog("Joined before host")
@@ -228,18 +259,22 @@ class ZoomClientWrapperMeetingDelegate
   }
 
   func onRecordingStatus(_ status: MobileRTCRecordingStatus) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onRecordingStatus")
     NSLog("Recording status %i", status.rawValue)
   }
 
   func onLocalRecordingStatus(_ userId: Int, status: MobileRTCRecordingStatus) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onLocalRecordingStatus")
     NSLog("Local recording status %i", status.rawValue)
   }
 
   func onCheckCMRPrivilege(_ result: MobileRTCCMRError) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onCheckCMRPrivilege")
     NSLog("Checked CMR privilege %i", result.rawValue)
   }
 
   func onMeetingParameterNotification(_ meetingParam: MobileRTCMeetingParameter?) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingParameterNotification")
     if let mp = meetingParam {
       NSLog("Meeting parameter %i", mp.meetingType.rawValue)
       if mp.isAutoRecordingCloud {
@@ -254,136 +289,172 @@ class ZoomClientWrapperMeetingDelegate
   }
 
   func onMeetingStateChange(_ state : MobileRTCMeetingState) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingStateChange")
     _methodChannel.invokeMethod("onMeetingStateChange", arguments: [NSNumber(value: state.rawValue)])
   }
 
   func onWaitingRoomStatusChange(_ needWaiting : Bool) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onWaitingRoomStatusChange")
     _methodChannel.invokeMethod("onWaitingRoomStatusChange", arguments: [NSNumber(value: needWaiting)])
   }
 
   func onMeetingEndedReason(_ reason: MobileRTCMeetingEndReason) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingEndedReason")
     NSLog("Meeting ended because %i", reason.rawValue)
   }
 
   func onMeetingError(_ error: MobileRTCMeetError, message: String?) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingError")
     NSLog("Meeting error %i", error.rawValue)
   }
 
 // USER CALLBACKS
 
   func onMyHandStateChange() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMyHandStateChange")
   }
 
   func onInMeetingUserUpdated() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onInMeetingUserUpdated")
     _methodChannel.invokeMethod("onInMeetingUserUpdated", arguments: nil)
   }
 
   func onSinkMeetingUserJoin(_ userId: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingUserJoin")
     _methodChannel.invokeMethod("onSinkMeetingUserJoin", arguments: [NSNumber(value: userId)])
   }
 
   func onSinkMeetingUserLeft(_ userId: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingUserLeft")
     _methodChannel.invokeMethod("onSinkMeetingUserLeft", arguments: [NSNumber(value: userId)])
   }
 
   func onSinkMeetingUserRaiseHand(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingUserRaiseHand")
   }
 
   func onSinkMeetingUserLowerHand(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingUserLowerHand")
   }
 
   func onSinkLowerAllHands() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkLowerAllHands")
   }
 
   func onSinkUserNameChanged(_ userId: UInt, userName: String) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkUserNameChanged")
   }
 
   func onSinkUserNameChanged(_ userNameChangedArr: [NSNumber]?) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkUserNameChanged")
   }
 
   func onMeetingHostChange(_ userId: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingHostChange")
     _methodChannel.invokeMethod("onMeetingHostChange", arguments: [NSNumber(value: userId)])
   }
 
   func onMeetingCoHostChange(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingCoHostChange")
   }
 
   func onMeetingCoHostChange(_ userID: UInt, isCoHost: Bool) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMeetingCoHostChange")
   }
 
   func onClaimHostResult(_ error: MobileRTCClaimHostError) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onClaimHostResult")
   }
 
 // VIDEO CALLBACKS
 
   func onSinkMeetingActiveVideo(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingActiveVideo")
   }
 
   func onSinkMeetingVideoStatusChange(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingVideoStatusChange")
     _methodChannel.invokeMethod("onSinkMeetingVideoStatusChange", arguments: [NSNumber(value: userID)])
   }
 
   func onMyVideoStateChange() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onMyVideoStateChange")
   }
 
   func onSinkMeetingVideoStatusChange(_ userID: UInt, videoStatus: MobileRTC_VideoStatus) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingVideoStatusChange")
   }
 
   func onSpotlightVideoChange(_ on: Bool) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSpotlightVideoChange")
   }
 
   func onSpotlightVideoUserChange(_ spotlightedUserList: [NSNumber]) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSpotlightVideoUserChange")
   }
 
   func onSinkMeetingPreviewStopped() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingPreviewStopped")
   }
 
   func onSinkMeetingActiveVideo(forDeck userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingActiveVideo")
   }
 
   func onSinkMeetingVideoQualityChanged(_ qality: MobileRTCVideoQuality, userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingVideoQualityChanged")
   }
 
   func onSinkMeetingVideoRequestUnmute(byHost completion: @escaping (Bool) -> Void) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingVideoRequestUnmute")
   }
 
   func onSinkMeetingShowMinimizeMeetingOrBackZoomUI(_ state: MobileRTCMinimizeMeetingState) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingShowMinimizeMeetingOrBackZoomUI")
   }
 
   func onHostVideoOrderUpdated(_ orderArr: [NSNumber]?) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onHostVideoOrderUpdated")
   }
 
   func onLocalVideoOrderUpdated(_ localOrderArr: [NSNumber]?) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onLocalVideoOrderUpdated")
   }
 
   func onFollowHostVideoOrderChanged(_ follow: Bool) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onFollowHostVideoOrderChanged")
   }
 
 // SCREEN SHARING CALLBACKS
 
   func onAppShareSplash() {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onAppShareSplash")
   }
 
   func onSinkMeetingActiveShare(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingActiveShare")
     _methodChannel.invokeMethod("onSinkMeetingActiveShare", arguments: [NSNumber(value: userID)])
   }
 
   func onSinkMeetingShareReceiving(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkMeetingShareReceiving")
   }
 
   func onSinkShareSettingTypeChanged(_ shareSettingType: MobileRTCShareSettingType) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkShareSettingTypeChanged")
   }
 
   func onSinkShareSizeChange(_ userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkShareSizeChange")
   }
 
   func onSinkSharingStatus(_ status: MobileRTCSharingStatus, userID: UInt) {
+    _log(message: "enter ZoomClientWrapperMeetingDelegate.onSinkSharingStatus")
   }
 
 }
 
 class ZoomClientWrapperWaitingRoomDelegate : NSObject, MobileRTCWaitingRoomServiceDelegate {
-
   var _methodChannel: FlutterMethodChannel
 
   init(channel: FlutterMethodChannel) {
@@ -392,22 +463,27 @@ class ZoomClientWrapperWaitingRoomDelegate : NSObject, MobileRTCWaitingRoomServi
   }
 
   func onWaitingRoomUserJoin(_ userId: UInt) {
-    NSLog("User joined waiting room %u\n", userId)
+    _log(message: "enter ZoomClientWrapperWaitingRoomDelegate.onWaitingRoomUserJoin")
+    _log(message: NSString(format: "User joined waiting room %u\n", userId))
   }
 
   func onWaitingRoomUserLeft(_ userId: UInt) {
-    NSLog("User left waiting room %u\n", userId)
+    _log(message: "enter ZoomClientWrapperWaitingRoomDelegate.onWaitingRoomUserLeft")
+    _log(message: NSString(format: "User left waiting room %u\n", userId))
   }
 
 }
 
 public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
+
   var _authDelegate: ZoomClientWrapperAuthDelegate
   var _meetingDelegate: ZoomClientWrapperMeetingDelegate
   var _customMeetingUIDelegate: ZoomClientWrapperCustomMeetingUIDelegate
   var _waitingRoomDelegate: ZoomClientWrapperWaitingRoomDelegate
 
   public static func register(with registrar: FlutterPluginRegistrar) {
+    _log(message: "enter SwiftFlutterZoomPlugin.register")
+    _log(message: "Registering SwiftFlutterZoomPlugin\n")
     let channel = FlutterMethodChannel(name: "flutter-zoom", binaryMessenger: registrar.messenger())
     let meetingViewFactory = ZoomMeetingViewFactory(messenger: registrar.messenger())
     let screenShareViewFactory = ZoomScreenShareViewFactory(messenger: registrar.messenger())
@@ -418,6 +494,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   public init(channel: FlutterMethodChannel) {
+    _log(message: "Initializing SwiftFlutterZoomPlugin\n")
     _authDelegate = ZoomClientWrapperAuthDelegate(channel: channel)
     _meetingDelegate = ZoomClientWrapperMeetingDelegate(channel: channel)
     _customMeetingUIDelegate = ZoomClientWrapperCustomMeetingUIDelegate(channel: channel)
@@ -426,9 +503,17 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    _log(message: "enter SwiftFlutterZoomPlugin.handle")
+    _log(message: NSString(format: "SwiftFlutterZoomPlugin.handle on %@\n", call.method))
     switch call.method {
     case "getPlatformVersion":
       result("0.0.1")
+    case "enableLogging":
+      _debugLogging = true
+    case "disableLogging":
+      _debugLogging = false
+    case "fullName":
+      result(NSFullUserName())
     case "initSDK":
       result(handleInitClientSDK(call))
     case "initAuthSDKParams":
@@ -509,8 +594,9 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleInitClientSDK(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleInitClientSDK")
     if let args = call.arguments as? Array<String> {
-
+      _log(message: NSString(format: "handleInitClientSDK: nitializing client SDK with %@, %@", args[0], args[1]))
       let initContext = MobileRTCSDKInitContext()
       initContext.domain = args[0]
       initContext.appGroupId = args[1]
@@ -522,11 +608,12 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
 
       return NSNumber(value: MobileRTC.shared().initialize(initContext))
     }
-
+    _log(message: "Failed to initialize client SDK due to missing args")
     return NSNumber(value: false)
   }
 
   func handleInitClientAuthSDKParams(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleInitClientAuthSDKParams")
     if let args = call.arguments as? Array<String> {
       if let auth = MobileRTC.shared().getAuthService() {
         auth.clientSecret = args[0]
@@ -541,6 +628,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleInitClientAuthJWTParams(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleInitClientAuthJWTParams")
     if let args = call.arguments as? Array<String> {
       if let auth = MobileRTC.shared().getAuthService() {
         auth.jwtToken = args[0]
@@ -555,6 +643,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleLogout(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleLogout")
     if let auth = MobileRTC.shared().getAuthService() {
       return NSNumber(value: auth.logoutRTC())
     }
@@ -562,6 +651,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetUserType(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetUserType")
     if let auth = MobileRTC.shared().getAuthService() {
       return NSNumber(value: auth.getUserType().rawValue)
     }
@@ -569,6 +659,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsLoggedIn(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsLoggedIn")
     if let auth = MobileRTC.shared().getAuthService() {
       return NSNumber(value: auth.isLoggedIn())
     }
@@ -576,6 +667,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleInitMeetingService(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleInitMeetingService")
     let settings = MobileRTC.shared().getMeetingSettings()
     let ms = MobileRTC.shared().getMeetingService()
     let wrs = MobileRTC.shared().getWaitingRoomService()
@@ -583,7 +675,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
       return NSNumber(value: false)
     }
 
-    NSLog("Init meeting service")
+    _log(message: "Init meeting service")
 
     ms?.delegate = _meetingDelegate
 
@@ -599,6 +691,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStartMeeting(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStartMeeting")
     if let args = call.arguments as? Array<String> {
       if let ms = MobileRTC.shared().getMeetingService() {
         let startParam = MobileRTCMeetingStartParam4LoginlUser()
@@ -614,6 +707,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStartMeetingApiUser(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStartMeetingApiUser")
     if let args = call.arguments as? Array<String> {
       if let ms = MobileRTC.shared().getMeetingService() {
 
@@ -634,6 +728,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleJoinMeeting(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleJoinMeeting")
     if let args = call.arguments as? Array<String> {
       if let ms = MobileRTC.shared().getMeetingService() {
         let joinParam = MobileRTCMeetingJoinParam()
@@ -650,6 +745,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleJoinMeetingWithPassword(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleJoinMeetingWithPassword")
     if let args = call.arguments as? Array<String> {
       if let ms = MobileRTC.shared().getMeetingService() {
         let joinParam = MobileRTCMeetingJoinParam()
@@ -666,6 +762,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleHandleZoomWebURL(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleHandleZoomWebURL")
     if let args = call.arguments as? Array<String> {
       if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.handZoomWebUrl(args[0]).rawValue)
@@ -675,6 +772,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStopMeeting(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStopMeeting")
     if let ms = MobileRTC.shared().getMeetingService() {
         ms.leaveMeeting(with: LeaveMeetingCmd.end)
     }
@@ -682,6 +780,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleLeaveMeeting(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleLeaveMeeting")
     if let ms = MobileRTC.shared().getMeetingService() {
         ms.leaveMeeting(with: LeaveMeetingCmd.leave)
     }
@@ -689,6 +788,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetMeetingState(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetMeetingState")
     if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.getMeetingState().rawValue)
     }
@@ -696,6 +796,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetMeetingSettings(_ call: FlutterMethodCall) -> Dictionary<String, NSNumber> {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetMeetingSettings")
     var dict = Dictionary<String, NSNumber>()
     if let settings = MobileRTC.shared().getMeetingSettings() {
       // autoConnectInternetAudio (bool)
@@ -717,6 +818,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleSetMeetingSettings(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleSetMeetingSettings")
     if let args = call.arguments as? Dictionary<String, NSNumber> {
       if let settings = MobileRTC.shared().getMeetingSettings() {
         // setAutoConnectInternetAudio (bool)
@@ -755,16 +857,19 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetMeetingURL(_ call: FlutterMethodCall) -> String {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetMeetingURL")
     let ih = MobileRTCInviteHelper.sharedInstance()
     return ih.joinMeetingURL
   }
 
   func handleGetMeetingPassword(_ call: FlutterMethodCall) -> String {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetMeetingPassword")
     let ih = MobileRTCInviteHelper.sharedInstance()
     return ih.meetingPassword
   }
 
   func handleGetMyUserId(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetMyUserId")
     if let ms = MobileRTC.shared().getMeetingService() {
       let userId = ms.myselfUserID()
       return NSNumber(value: userId)
@@ -773,6 +878,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetActiveUserId(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetActiveUserId")
     if let ms = MobileRTC.shared().getMeetingService() {
       let userId = ms.activeUserID()
       return NSNumber(value: userId)
@@ -781,6 +887,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetAllUserIds(_ call: FlutterMethodCall) -> [Any] {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetAllUserIds")
     if let ms = MobileRTC.shared().getMeetingService() {
       if let userIds = ms.getInMeetingUserList() {
         return userIds
@@ -790,6 +897,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetUserInfo(_ call: FlutterMethodCall) -> Dictionary<String, Any?> {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetUserInfo")
     var dict = Dictionary<String, Any?>()
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
@@ -826,6 +934,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleChangeName(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleChangeName")
     if let args = call.arguments as? Array<Any?> {
       if let ms = MobileRTC.shared().getMeetingService() {
         let nameArg = (args[0] as? String) ?? ""
@@ -838,6 +947,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleConnectAudio(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleConnectAudio")
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.connectMyAudio(args[0].boolValue))
@@ -847,6 +957,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleMuteAudio(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleMuteAudio")
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.muteMyAudio(args[0].boolValue).rawValue)
@@ -856,6 +967,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsAudioMuted(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsAudioMuted")
     if let ms = MobileRTC.shared().getMeetingService() {
       return NSNumber(value: ms.isMyAudioMuted())
     }
@@ -863,6 +975,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsVoIPSupported(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsVoIPSupported")
     if let ms = MobileRTC.shared().getMeetingService() {
       return NSNumber(value: ms.isSupportedVOIP())
     }
@@ -870,6 +983,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleMuteVideo(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleMuteVideo")
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.muteMyVideo(args[0].boolValue).rawValue)
@@ -879,6 +993,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsVideoMuted(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsVideoMuted")
     if let ms = MobileRTC.shared().getMeetingService() {
       return NSNumber(value: !ms.isSendingMyVideo())
     }
@@ -886,6 +1001,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleRotateMyVideo(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleRotateMyVideo")
 //   TODO AW
 //     if let args = call.arguments as? Array<NSNumber> {
 //       if let ms = MobileRTC.shared().getMeetingService() {
@@ -896,6 +1012,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleGetUserVideoSize(_ call: FlutterMethodCall) -> [NSNumber] {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleGetUserVideoSize")
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
         let videoSize = ms.getUserVideoSize(args[0].uintValue)
@@ -906,6 +1023,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleSwitchCamera(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleSwitchCamera")
     if let ms = MobileRTC.shared().getMeetingService() {
       ms.switchMyCamera()
       return NSNumber(value: true)
@@ -914,6 +1032,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStartAppShare(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStartAppShare")
     if let ms = MobileRTC.shared().getMeetingService() {
       if ms.startAppShare() {
         let vc = UIApplication.shared.windows.first?.rootViewController as! FlutterViewController
@@ -927,6 +1046,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStopAppShare(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStopAppShare")
     if let ms = MobileRTC.shared().getMeetingService() {
       ms.stopAppShare()
       return NSNumber(value: true)
@@ -935,6 +1055,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleLockShare(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleLockShare")
     if let args = call.arguments as? Array<NSNumber> {
       if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: ms.lockShare(args[0].boolValue))
@@ -944,6 +1065,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsShareLocked(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsShareLocked")
     if let ms = MobileRTC.shared().getMeetingService() {
       return NSNumber(value: ms.isMeetingLocked())
     }
@@ -951,6 +1073,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleDialOut(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleDialOut")
     if let args = call.arguments as? Array<String> {
       let number = args[0]
       let name = args[1]
@@ -963,6 +1086,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleEndDialOut(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleEndDialOut")
     if let args = call.arguments as? Array<NSNumber> {
       let userid = UInt(args[0].intValue)
       if let ms = MobileRTC.shared().getMeetingService() {
@@ -974,6 +1098,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStartAnnotation(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStartAnnotation")
     if let ms = MobileRTC.shared().getAnnotationService(){
       if ms.canDoAnnotation() {
         ms.startAnnotation(withSharedView: nil) // needs a view?
@@ -985,6 +1110,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleIsAnnotating(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleIsAnnotating")
     if let ms = MobileRTC.shared().getMeetingService() {
         return NSNumber(value: !ms.isAnnotationOff())
     }
@@ -992,6 +1118,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleClearAnnotation(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleClearAnnotation")
     if let ans = MobileRTC.shared().getAnnotationService() {
       if let ms = MobileRTC.shared().getMeetingService() {
         if !ms.isAnnotationOff() {
@@ -1004,6 +1131,7 @@ public class SwiftFlutterZoomPlugin: NSObject, FlutterPlugin {
   }
 
   func handleStopAnnotation(_ call: FlutterMethodCall) -> NSNumber {
+    _log(message: "enter SwiftFlutterZoomPlugin.handleStopAnnotation")
     if let ans = MobileRTC.shared().getAnnotationService() {
       if let ms = MobileRTC.shared().getMeetingService() {
         if !ms.isAnnotationOff() {

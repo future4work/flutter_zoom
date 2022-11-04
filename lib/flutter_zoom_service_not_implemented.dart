@@ -235,5 +235,10 @@ class ZoomServiceNotImplemented extends ZoomService {
     return false;
   }
 
+  @override
+  Future<String?> fullName() {
+    throw UnimplementedError();
+  }
+
 }
 

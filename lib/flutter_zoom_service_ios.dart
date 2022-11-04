@@ -66,6 +66,11 @@ class ZoomServiceIOS extends ZoomService {
   }
 
   @override
+  Future<String?> fullName() async {
+    return await _channel.invokeMethod('fullName', []);
+  }
+
+  @override
   Future<bool> initSDK({ required String domain, String appGroupId = '' }) async {
     final bool? success = await _channel.invokeMethod('initSDK', [domain, appGroupId]);
     return success ?? false;
@@ -342,9 +347,8 @@ class ZoomServiceIOS extends ZoomService {
 
 class ZoomIOSMeetingView extends StatelessWidget {
   final int userId;
-  final bool videoMuted;
 
-  const ZoomIOSMeetingView({ required this.userId, required this.videoMuted, Key? key }) : super(key: key);
+  const ZoomIOSMeetingView({ required this.userId, Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -352,7 +356,6 @@ class ZoomIOSMeetingView extends StatelessWidget {
 
     final Map<String, int> creationParams = <String, int>{
       'userId' : userId,
-      'muted': videoMuted ? 1 : 0,
     };
 
     return UiKitView (
@@ -366,9 +369,8 @@ class ZoomIOSMeetingView extends StatelessWidget {
 
 class ZoomIOSScreenShareView extends StatelessWidget {
   final int userId;
-  final bool videoMuted;
 
-  const ZoomIOSScreenShareView({ required this.userId, required this.videoMuted, Key? key }) : super(key: key);
+  const ZoomIOSScreenShareView({ required this.userId, Key? key }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -376,7 +378,6 @@ class ZoomIOSScreenShareView extends StatelessWidget {
 
     final Map<String, int> creationParams = <String, int>{
       'userId' : userId,
-      'muted': videoMuted ? 1 : 0,
     };
 
     return UiKitView (
